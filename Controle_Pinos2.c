@@ -2,6 +2,8 @@
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
+#include "aciona_led_verde.h"
+
 // update cmakelist
 
 // UART defines
@@ -69,6 +71,11 @@ int main()
                 {
                     desligar_leds();
                     uart_puts(UART_ID, "Comando recebido: OFF\n");
+                }
+                if (strcmp(rx_buffer, "GREEN") == 0)
+                {
+                    aciona_led_verde();
+                    uart_puts(UART_ID, "Comando recebido: GREEN\n");
                 }
             }
             else
