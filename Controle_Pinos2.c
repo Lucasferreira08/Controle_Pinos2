@@ -2,6 +2,8 @@
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
+#include "aciona_led_verde.h"
+
 // update cmakelist
 
 // UART defines
@@ -76,11 +78,19 @@ int main()
                 {
                     desligar_leds();
                     uart_puts(UART_ID, "Comando recebido: OFF\n");
-                }else if (strcmp(rx_buffer, "white") == 0) {
+                }
+              
+                if (strcmp(rx_buffer, "GREEN") == 0)
+                {
+                    aciona_led_verde();
+                    uart_puts(UART_ID, "Comando recebido: GREEN\n");
+                }
+              
+                if (strcmp(rx_buffer, "white") == 0) {
                     ligar_led_branco();
                     uart_puts(UART_ID, "comando recebido: WHITE\n");
                 } 
-            }
+
             else
             {
                 // Armazena o caractere no buffer se não for o final da linha
