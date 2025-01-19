@@ -10,7 +10,7 @@ Através da UART o microcontrolador recebe leituras de números inteiros positiv
 - 6: Emite som através do buzzer durante 2 segundos
 - Demais entradas: Emite uma mensagem de erro "UNKOWN COMMAND" e permite novas entradas
 
-### Link do vídeo
+### Link do vídeo 🎥
 **[Drive](https://drive.google.com/drive/folders/1l1bmIf7KoSFU9bqmIxsQMp2Eyl7_93Q0?usp=sharing)**
 
 ### Colaboradores 👨‍💻
