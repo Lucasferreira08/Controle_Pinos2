@@ -2,39 +2,57 @@
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
-#include "aciona_led_verde.h"
-
-// update cmakelist
-
-// UART defines
-// By default the stdout UART is `uart0`, so we will use the second one
-#define UART_ID uart1
-#define BAUD_RATE 115200
-
-// Use pins 4 and 5 for UART1
-// Pins can be changed, see the GPIO function select table in the datasheet for information on GPIO assignments
-#define UART_TX_PIN 4
-#define UART_RX_PIN 5
 
 #define GPIO_LED_GREEN 11
 #define GPIO_LED_BLUE 12
 #define GPIO_LED_RED 13
+#define GPIO_BUZZER 21 
 
-void desligar_leds()
-{
+// Mapeamento das ações para enviar na UART em escrito
+char* MAP_ENTRYS[7] = {
+    "ON: RED", "ON: BLUE", "ON: GREEN", "ON: WHITE", "OFF: ALL LEDS", "ON: BUZZER", "ERROR: UNKOWN COMMAND"
+};
+
+uint check_entry(){
+    uint input;
+    //printf("Aguardando entrada...");
+    scanf("%d", &input);
+
+    if(input < 7){
+        // Manda via UART a mensagem da ação executada e o código referente à ela
+        printf("%s\n", MAP_ENTRYS[input - 1]);
+        return input;
+    
+    // Bloco para evitar erros
+    } else{
+        printf("%s\n", MAP_ENTRYS[6]);
+        return 7;
+    }
+}
+
+void acionar_buzzer() {
+    for(int i = 0; i < 1000; i++){
+        gpio_put(GPIO_BUZZER, 1);
+        sleep_ms(1);
+        gpio_put(GPIO_BUZZER, 0);
+        sleep_ms(1);
+    }
+}
+
+void desligar_leds(){
     gpio_put(GPIO_LED_RED, false);
     gpio_put(GPIO_LED_GREEN, false);
     gpio_put(GPIO_LED_BLUE, false);
 }
-void ligar_led_branco() {
+
+void ligar_led_branco(){
     gpio_put(GPIO_LED_RED, true);
     gpio_put(GPIO_LED_GREEN, true);
     gpio_put(GPIO_LED_BLUE, true);
 }
 
 
-int main()
-{
+int main(){
     stdio_init_all();
 
     gpio_init(GPIO_LED_RED);
@@ -44,61 +62,45 @@ int main()
     gpio_set_dir(GPIO_LED_GREEN, GPIO_OUT);
     gpio_set_dir(GPIO_LED_BLUE, GPIO_OUT);
 
-    // Set up our UART
-    uart_init(UART_ID, BAUD_RATE);
-    // Set the TX and RX pins by using the function select on the GPIO
-    // Set datasheet for more information on function select
-    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
+    gpio_init(GPIO_BUZZER);  // Inicializa o pino do buzzer
+    gpio_set_dir(GPIO_BUZZER, GPIO_OUT);  // Configura o buzzer como saída
 
-    // Use some the various UART functions to send out data
-    // In a default system, printf will also output via the default UART
+    while (true){
+        uint acao = check_entry();
 
-    // Send out a string, with CR/LF conversions
-    uart_puts(UART_ID, " Hello, UART!\n");
+        switch (acao){
+            case 1 :
+            desligar_leds();
+            gpio_put(GPIO_LED_RED, true);
+            break;
 
-    // For more examples of UART use see https://github.com/raspberrypi/pico-examples/tree/master/uart
-    char rx_buffer[64]; // Buffer para armazenar o comando recebido
-    int buffer_index = 0;
+            case 2 :
+            desligar_leds();
+            gpio_put(GPIO_LED_BLUE, true);
+            break;
 
-    while (true)
-    {
-        while (uart_is_readable(UART_ID))
-        {
-            char ch = uart_getc(UART_ID); // Lê o próximo caractere
-            if (ch == '\n' || ch == '\r')
-            {
-                // Final do comando recebido
-                rx_buffer[buffer_index] = '\0'; // Termina a string
-                buffer_index = 0;               // Reinicia o índice do buffer
-                
+            case 3 :
+            desligar_leds();
+            gpio_put(GPIO_LED_GREEN, true);
+            break;
 
-                // Verifica o comando recebido
-                if (strcmp(rx_buffer, "off") == 0)
-                {
-                    desligar_leds();
-                    uart_puts(UART_ID, "Comando recebido: OFF\n");
-                }
-              
-                if (strcmp(rx_buffer, "GREEN") == 0)
-                {
-                    aciona_led_verde();
-                    uart_puts(UART_ID, "Comando recebido: GREEN\n");
-                }
-              
-                if (strcmp(rx_buffer, "white") == 0) {
-                    ligar_led_branco();
-                    uart_puts(UART_ID, "comando recebido: WHITE\n");
-                } 
+            case 4 :
+            ligar_led_branco();
+            break;
 
-            else
-            {
-                // Armazena o caractere no buffer se não for o final da linha
-                if (buffer_index < sizeof(rx_buffer) - 1)
-                {
-                    rx_buffer[buffer_index++] = ch;
-                }
-            }
+            case 5 :
+            desligar_leds();
+            break;
+
+            case 6 :
+            desligar_leds();
+            acionar_buzzer();
+            break;
+
+            default :
+            continue;
         }
+
+        sleep_ms(1000);
     }
 }
