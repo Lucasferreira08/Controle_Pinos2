@@ -26,6 +26,12 @@ void desligar_leds()
     gpio_put(GPIO_LED_GREEN, false);
     gpio_put(GPIO_LED_BLUE, false);
 }
+void ligar_led_branco() {
+    gpio_put(GPIO_LED_RED, true);
+    gpio_put(GPIO_LED_GREEN, true);
+    gpio_put(GPIO_LED_BLUE, true);
+}
+
 
 int main()
 {
@@ -65,6 +71,7 @@ int main()
                 // Final do comando recebido
                 rx_buffer[buffer_index] = '\0'; // Termina a string
                 buffer_index = 0;               // Reinicia o índice do buffer
+                
 
                 // Verifica o comando recebido
                 if (strcmp(rx_buffer, "off") == 0)
@@ -72,12 +79,18 @@ int main()
                     desligar_leds();
                     uart_puts(UART_ID, "Comando recebido: OFF\n");
                 }
+              
                 if (strcmp(rx_buffer, "GREEN") == 0)
                 {
                     aciona_led_verde();
                     uart_puts(UART_ID, "Comando recebido: GREEN\n");
                 }
-            }
+              
+                if (strcmp(rx_buffer, "white") == 0) {
+                    ligar_led_branco();
+                    uart_puts(UART_ID, "comando recebido: WHITE\n");
+                } 
+
             else
             {
                 // Armazena o caractere no buffer se não for o final da linha
