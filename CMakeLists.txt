@@ -35,27 +35,23 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Controle_Pinos2 Controle_Pinos2.c )
+add_executable(Controle_Pinos2 Controle_Pinos2.c    
+)
 
 pico_set_program_name(Controle_Pinos2 "Controle_Pinos2")
 pico_set_program_version(Controle_Pinos2 "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(Controle_Pinos2 1)
+pico_enable_stdio_uart(Controle_Pinos2 0)
 pico_enable_stdio_usb(Controle_Pinos2 1)
-
-# Add the standard library to the build
-target_link_libraries(Controle_Pinos2
-        pico_stdlib)
 
 # Add the standard include files to the build
 target_include_directories(Controle_Pinos2 PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
 )
 
-# Add any user requested libraries
-target_link_libraries(Controle_Pinos2 
-        
-        )
+# Add the standard library to the build
+target_link_libraries(Controle_Pinos2
+        pico_stdlib)
 
 pico_add_extra_outputs(Controle_Pinos2)
