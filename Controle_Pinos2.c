@@ -31,9 +31,12 @@ uint check_entry(){
 }
 
 void acionar_buzzer() {
-    gpio_put(GPIO_BUZZER, 1);  // Liga o buzzer
-    sleep_ms(2000);            // Mantenha o buzzer ligado por 2 segundos
-    gpio_put(GPIO_BUZZER, 0);  // Desliga o buzzer
+    for(int i = 0; i < 1000; i++){
+        gpio_put(GPIO_BUZZER, 1);
+        sleep_ms(1);
+        gpio_put(GPIO_BUZZER, 0);
+        sleep_ms(1);
+    }
 }
 
 void desligar_leds(){
