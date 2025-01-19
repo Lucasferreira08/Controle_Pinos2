@@ -15,7 +15,7 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 1.5.1)
+set(sdkVersion 2.0.0)
 set(toolchainVersion 13_2_Rel1)
 set(picotoolVersion 2.0.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
@@ -59,4 +59,3 @@ target_link_libraries(Controle_Pinos2
         )
 
 pico_add_extra_outputs(Controle_Pinos2)
-

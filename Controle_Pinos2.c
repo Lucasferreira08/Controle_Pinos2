@@ -2,6 +2,7 @@
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
+// update cmakelist
 
 // UART defines
 // By default the stdout UART is `uart0`, so we will use the second one
